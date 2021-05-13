@@ -10,6 +10,15 @@
 3. The module `compile.rkt` provides a function `compile` which compiles a
    `Prgm` to the corresponding wat (webassembly text format) code.
 
+## Building
+
+To generate the `src/main` executable:
+
+```sh
+cd src
+raco exe main.rkt
+```
+
 ## Running
 
 You can compile and run a MiniRkt program by the following steps:
