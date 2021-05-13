@@ -1,0 +1,115 @@
+#lang racket
+(require "grammar.rkt" "wat-grammar.rkt")
+(provide (all-defined-out))
+
+;; Prgm -> WatPrgm
+(define (prgm->watprgm prgm)
+  (match prgm
+    [(Prgm ds e)
+     (map defn->watdecl
+          (cons (Defn 'main (list) e) ds))
+     ]))
+
+;; Defn -> List WatDecl
+(define (defn->watdecl d)
+  (match d
+    [(Defn f xs e)
+     (WatFunc f xs (expr->watinsts e))
+     ]))
+
+;; Expr -> List WatInst
+(define (expr->watinsts e) 'TODO)
+
+
+; ;;
+; ;; compilation
+; ;;
+
+; ;; compile : Prgm -> Wat
+; (define (compile prgm)
+;   (match prgm
+;     [(Prgm defns e)
+;      (append
+;       (list 'module)
+;       (map compile-defn defns)
+;       (list (compile-expr e)))]))
+
+; ;; compile-defn : Defn -> Wat
+; (define (compile-defn defn)
+;   (match defn
+;     [(Defn f xs e)
+;      (list
+;       (append
+;        (list 'func)
+;        (list (compile-symbol f))
+;        (map (lambda (x) (list 'param (compile-symbol x) 'i32)) xs)
+;        (list (list 'result 'i32))
+;        (compile-expr e))
+;       (list 'export (symbol->string f) (list 'func (compile-symbol f))))
+;      ]))
+
+; ;; compile-expr : Expr -> Wat
+; (define (compile-expr e)
+;   (match e
+;     [(Eof) 'TODO]
+;     [(Empty) 'TODO]
+;     [(Int i) (compile-integer i)]
+;     [(Bool b) (compile-boolean b)]
+;     [(Char c) (compile-character c)]
+;     [(String s) (compile-string s)]
+;     [(Prim0 op)
+;      (match op
+;        ['read-byte 'TODO]
+;        ['peek-byte 'TODO]
+;        ['void 'TODO]
+;        ['collect-garbage 'TODO])]
+;     [(Prim1 op e)
+;      (match op
+;        ['add1 'TODO]
+;        ['sub1 (append (compile-expr e)
+;                       (list (list 'i32.const '1) 'i32.sub))]
+;        ['zero? 'TODO]
+;        ['char? 'TODO]
+;        ['integer->char 'TODO]
+;        ['char->integer 'TODO]
+;        ['write-byte 'TODO]
+;        ['eof-object? 'TODO]
+;        ['box 'TODO]
+;        ['car 'TODO]
+;        ['cdr 'TODO]
+;        ['unbox 'TODO]
+;        ['string-length 'TODO]
+;        ['empty? 'TODO])]
+;     [(Prim2 op e1 e2)
+;      (match op
+;        ['+ 'TODO]
+;        ['- 'TODO]
+;        ['eq? 'TODO]
+;        ['cons 'TODO]
+;        ['string-ref 'TODO]
+;        ['make-string 'TODO])]
+;     [(Prim3 op e1 e2 e3)
+;      (match op
+;        ['string-set! 'TODO])]
+;     [(If e1 e2 e3) 'TODO]
+;     [(Begin es) 'TODO]
+;     [(Let x e1 e2) 'TODO]
+;     [(Var x) (list (list 'local.get (compile-symbol x)))]
+;     [(App x es) 'TODO]
+;     ))
+
+; (define (compile-integer i) (list (list 'i32.const (number->symbol i))))
+; (define (compile-boolean i) 'TODO)
+; (define (compile-character i) 'TODO)
+; (define (compile-string i) 'TODO)
+
+; ;; compile-symbol : Symbol -> Wat
+; ;; '<x> => '$<x>
+; (define (compile-symbol x)
+;   (symbol-append '$ x))
+
+; (define (symbol-append . ss)
+;   (string->symbol (string-append* (map symbol->string ss))))
+  
+; (define (number->symbol x)
+;   (string->symbol (number->string x)))
